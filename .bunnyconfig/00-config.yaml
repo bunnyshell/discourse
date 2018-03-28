@@ -95,9 +95,6 @@ exec_once:
      . /etc/profile.d/azure_secrets.sh
      config_file_template='/tmp/discourse.conf'
 
-     mem_in_KB=`cat /proc/meminfo | grep MemTotal | cut -d" " -f9`
-     buffers_mem_in_MB=`echo "${mem_in_KB} * 25/100/1024" | bc`
-
      sed -i -- "s/DISCOURSE_HOSTNAME/${DISCOURSE_HOSTNAME}/g" ${config_file}
      sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file}
      sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file}
