@@ -85,7 +85,7 @@ exec_once:
    name: Download Discourse
    command: |
      #!/usr/bin/env bash
-     mkdir /var/discourse
+     mkdir -p /var/discourse
      git clone https://github.com/discourse/discourse_docker.git /var/discourse
 
   Add Discourse Cofiguration:
