@@ -31,14 +31,14 @@ exec_once:
         UNICORN_WORKERS:
       
         ## The domain name this Discourse instance will respond to
-        DISCOURSE_HOSTNAME: DISCOURSE_HOSTNAME
+        DISCOURSE_HOSTNAME: DISCOURSE_HOSTNAME_VAR
       
-        DISCOURSE_DEVELOPER_EMAILS: 'DISCOURSE_EMAIL'
+        DISCOURSE_DEVELOPER_EMAILS: 'DISCOURSE_EMAIL_VAR'
       
-        DISCOURSE_SMTP_ADDRESS: DISCOURSE_SMTP_ADDRESS
-        DISCOURSE_SMTP_PORT: DISCOURSE_SMTP_PORT
-        DISCOURSE_SMTP_USER_NAME: DISCOURSE_SMTP_USER_NAME
-        DISCOURSE_SMTP_PASSWORD: "DISCOURSE_SMTP_PASSWORD"
+        DISCOURSE_SMTP_ADDRESS: DISCOURSE_SMTP_ADDRESS_VAR
+        DISCOURSE_SMTP_PORT: DISCOURSE_SMTP_PORT_VAR
+        DISCOURSE_SMTP_USER_NAME: DISCOURSE_SMTP_USER_NAME_VAR
+        DISCOURSE_SMTP_PASSWORD: "DISCOURSE_SMTP_PASSWORD_VAR"
         #DISCOURSE_SMTP_ENABLE_START_TLS: true           # (optional, default true)
       
         ## If you added the Lets Encrypt template, uncomment below to get a free SSL certificate
@@ -98,12 +98,12 @@ exec_once:
      . /etc/profile.d/azure_secrets.sh
      config_file_template='/tmp/discourse.conf'
 
-     sed -i -- "s/DISCOURSE_HOSTNAME/${DISCOURSE_HOSTNAME}/g" ${config_file_template}
-     sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file_template}
-     sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file_template}
-     sed -i -- "s/DISCOURSE_SMTP_USER_NAME/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file_template}
-     sed -i -- "s/DISCOURSE_SMTP_PASSWORD/${DISCOURSE_SMTP_PASSWORD}/g" ${config_file_template}
-     sed -i -- "s/DISCOURSE_EMAIL/${DISCOURSE_EMAIL}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_HOSTNAME_VAR/${DISCOURSE_HOSTNAME}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_ADDRESS_VAR/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_PORT_VAR/${DISCOURSE_SMTP_PORT}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_USER_NAME_VAR/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_PASSWORD_VAR/${DISCOURSE_SMTP_PASSWORD}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_EMAIL_VAR/${DISCOURSE_EMAIL}/g" ${config_file_template}
 
      cp ${config_file_template} /var/discourse/containers/app.yml
 
