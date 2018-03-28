@@ -1,4 +1,79 @@
 exec_once:
+ files:
+  /tmp/discourse.conf:
+    name: discourse.conf
+    path: /tmp/
+    mode: "0644"
+    owner: root
+    group: root
+    content: |
+      templates:
+        - "templates/postgres.template.yml"
+        - "templates/redis.template.yml"
+        - "templates/web.template.yml"
+        - "templates/web.ratelimited.template.yml"
+      ## Uncomment these two lines if you wish to add Lets Encrypt (https)
+        #- "templates/web.ssl.template.yml"
+        #- "templates/web.letsencrypt.ssl.template.yml"
+      expose:
+        - "80:80"   # http
+        - "443:443" # https
+      
+      params:
+        db_default_text_search_config: "pg_catalog.english"
+      
+        db_shared_buffers:
+      
+      env:
+        LANG: en_US.UTF-8
+        # DISCOURSE_DEFAULT_LOCALE: en
+      
+        UNICORN_WORKERS:
+      
+        ## The domain name this Discourse instance will respond to
+        DISCOURSE_HOSTNAME: DISCOURSE_HOSTNAME
+      
+        DISCOURSE_DEVELOPER_EMAILS: 'DISCOURSE_EMAIL'
+      
+        DISCOURSE_SMTP_ADDRESS: DISCOURSE_SMTP_ADDRESS
+        DISCOURSE_SMTP_PORT: DISCOURSE_SMTP_PORT
+        DISCOURSE_SMTP_USER_NAME: DISCOURSE_SMTP_USER_NAME
+        DISCOURSE_SMTP_PASSWORD: "DISCOURSE_SMTP_PASSWORD"
+        #DISCOURSE_SMTP_ENABLE_START_TLS: true           # (optional, default true)
+      
+        ## If you added the Lets Encrypt template, uncomment below to get a free SSL certificate
+        #LETSENCRYPT_ACCOUNT_EMAIL: me@example.com
+      
+        ## The CDN address for this Discourse instance (configured to pull)
+        ## see https://meta.discourse.org/t/14857 for details
+        #DISCOURSE_CDN_URL: //discourse-cdn.example.com
+      
+      ## The Docker container is stateless; all data is stored in /shared
+      volumes:
+        - volume:
+            host: /var/discourse/shared/standalone
+            guest: /shared
+        - volume:
+            host: /var/discourse/shared/standalone/log/var-log
+            guest: /var/log
+      
+      ## Plugins go here
+      ## see https://meta.discourse.org/t/19157 for details
+      hooks:
+        after_code:
+          - exec:
+              cd: $home/plugins
+              cmd:
+                - git clone https://github.com/discourse/docker_manager.git
+      
+      ## Any custom commands to run after building
+      run:
+        - exec: echo "Beginning of custom commands"
+        ## If you want to set the 'From' email address for your first registration, uncomment and change:
+        ## After getting the first signup email, re-comment the line. It only needs to run once.
+        #- exec: rails r "SiteSetting.notification_email='info@unconfigured.discourse.org'"
+        - exec: echo "End of custom commands"
+
  execs:
   Install Docker and Git:
    name: Install Docker and Git
@@ -6,12 +81,36 @@ exec_once:
      #!/usr/bin/env bash
      wget -qO- https://get.docker.com/ | sh
 
-  Install Discourse:
-   name: Install Discourse
-   timeout: "2000"
+  Download Discourse:
+   name: Download Discourse
    command: |
      #!/usr/bin/env bash
      mkdir /var/discourse
      git clone https://github.com/discourse/discourse_docker.git /var/discourse
+
+  Add Discourse Cofiguration:
+   name: Add Discourse Configuration
+   command: |
+     #!/usr/bin/env bash
+     . /etc/profile.d/azure_secrets.sh
+     config_file_template='/tmp/discourse.conf'
+
+     mem_in_KB=`cat /proc/meminfo | grep MemTotal | cut -d" " -f9`
+     buffers_mem_in_MB=`echo "${mem_in_KB} * 25/100/1024" | bc`
+
+     sed -i -- "s/DISCOURSE_HOSTNAME/${DISCOURSE_HOSTNAME}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_SMTP_USER_NAME/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_EMAIL/${DISCOURSE_EMAIL}/g" ${config_file}
+
+     cp ${config_file} /var/discourse/containers/app.yml
+
+pre_app_deploy:
+ execs:
+  Start Discourse:
+   name: Start Discourse
+   command: |
+     #!/usr/bin/env bash
      cd /var/discourse
-     #./discourse-setup
+     echo '\n' | ./discourse-setup
