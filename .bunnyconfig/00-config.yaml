@@ -99,6 +99,7 @@ exec_once:
      sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file}
      sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file}
      sed -i -- "s/DISCOURSE_SMTP_USER_NAME/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_SMTP_PASSWORD/${DISCOURSE_SMTP_PASSWORD}/g" ${config_file}
      sed -i -- "s/DISCOURSE_EMAIL/${DISCOURSE_EMAIL}/g" ${config_file}
 
      cp ${config_file} /var/discourse/containers/app.yml
