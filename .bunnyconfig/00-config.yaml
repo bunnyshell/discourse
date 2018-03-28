@@ -1,0 +1,17 @@
+exec_once:
+ execs:
+  Install Docker and Git:
+   name: Install Docker and Git
+   command: |
+     #!/usr/bin/env bash
+     wget -qO- https://get.docker.com/ | sh
+
+  Install Discourse:
+   name: Install Discourse
+   timeout: "2000"
+   command: |
+     #!/usr/bin/env bash
+     mkdir /var/discourse
+     git clone https://github.com/discourse/discourse_docker.git /var/discourse
+     cd /var/discourse
+     #./discourse-setup
