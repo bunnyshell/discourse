@@ -95,14 +95,14 @@ exec_once:
      . /etc/profile.d/azure_secrets.sh
      config_file_template='/tmp/discourse.conf'
 
-     sed -i -- "s/DISCOURSE_HOSTNAME/${DISCOURSE_HOSTNAME}/g" ${config_file}
-     sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file}
-     sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file}
-     sed -i -- "s/DISCOURSE_SMTP_USER_NAME/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file}
-     sed -i -- "s/DISCOURSE_SMTP_PASSWORD/${DISCOURSE_SMTP_PASSWORD}/g" ${config_file}
-     sed -i -- "s/DISCOURSE_EMAIL/${DISCOURSE_EMAIL}/g" ${config_file}
+     sed -i -- "s/DISCOURSE_HOSTNAME/${DISCOURSE_HOSTNAME}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_ADDRES/${DISCOURSE_SMTP_ADDRESS}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_POST/${DISCOURSE_SMTP_POST}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_USER_NAME/${DISCOURSE_SMTP_USER_NAME}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_SMTP_PASSWORD/${DISCOURSE_SMTP_PASSWORD}/g" ${config_file_template}
+     sed -i -- "s/DISCOURSE_EMAIL/${DISCOURSE_EMAIL}/g" ${config_file_template}
 
-     cp ${config_file} /var/discourse/containers/app.yml
+     cp ${config_file_template} /var/discourse/containers/app.yml
 
 pre_app_deploy:
  execs:
