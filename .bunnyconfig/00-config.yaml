@@ -111,7 +111,7 @@ pre_app_deploy:
  execs:
   Start Discourse:
    name: Start Discourse
-   timeout: "2000"
+   timeout: "3000"
    command: |
      #!/usr/bin/env bash
      cd /var/discourse
